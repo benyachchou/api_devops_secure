@@ -29,9 +29,9 @@ FROM node:20-alpine AS runtime
 ENV NODE_ENV=production
 WORKDIR /app
 
-# Copier l'application depuis le builder en définissant un propriétaire non-root
-# Les ressources copiées sont rendues en lecture seule ci-dessous pour éviter les écritures
-COPY --chown=node:node --from=builder /app /app
+# Copier l'application depuis le builder sans changer l'ownership (root:root)
+# Évite qu'un utilisateur non-root puisse modifier les permissions (immutabilité)
+COPY --from=builder /app /app
 
 # Rendre les ressources copiées en lecture seule, sauf un répertoire temporaire
 RUN mkdir -p /app/tmp \
