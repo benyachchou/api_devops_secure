@@ -3,4 +3,7 @@ database.db
 database.db-journal
 data/
 *.log
+.env
+.env.local
+.env.*.local
 

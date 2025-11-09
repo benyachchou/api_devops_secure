@@ -1,4 +1,22 @@
-# API REST Non Sécurisée (POC Pédagogique)
+# API REST DevSecOps
+
+Ce projet contient deux versions de l'API :
+
+1. **Version non sécurisée** (POC Pédagogique) - `server.js`
+2. **Version sécurisée** - `server-secure.js` ✨
+
+⚠️ **ATTENTION** : La version non sécurisée est volontairement non sécurisée pour des fins pédagogiques. Ne pas utiliser en production.
+
+---
+
+## 📚 Documentation
+
+- **[README.md](./README.md)** - Version non sécurisée (ce fichier)
+- **[README-SECURE.md](./README-SECURE.md)** - Version sécurisée avec toutes les bonnes pratiques
+
+---
+
+# Version Non Sécurisée (POC Pédagogique)
 
 ⚠️ **ATTENTION** : Cette API est volontairement non sécurisée pour des fins pédagogiques. Ne pas utiliser en production.
 
@@ -567,3 +585,73 @@ Puis utilisez-les dans vos requêtes :
 - ❌ Base de données SQLite sans schéma de sécurité
 - ❌ Vérification de rôles basique (pas de protection contre la manipulation)
 
+Vue d’ensemble
+
+- Objectif: durcir le serveur, réduire la surface d’attaque, rendre la configuration plus sûre en production, et éviter les erreurs silencieuses.
+- Portée: modifications ciblées sur server-secure.js , src/app.js , src/config/security.js , src/middleware/rateLimiter.js , src/routes/resources.js , docker-compose.yml , et env.example .
+Démarrage Durci
+
+- Vérification des secrets et de l’environnement:
+  - En production , le serveur refuse de démarrer si JWT_SECRET est manquant ou égal à la valeur par défaut ( 'default-secret-change-in-production' ).
+  - En production , le serveur refuse CORS_ORIGIN='*' pour éviter les origines non contrôlées.
+- Gestion d’arrêt propre:
+  - Capture SIGINT et SIGTERM , fermeture propre du serveur, puis arrêt forcé au bout de 10s si nécessaire.
+- Robustesse des connexions:
+  - Définit server.keepAliveTimeout=65000 et server.headersTimeout=66000 afin d’éviter les connexions pendantes ou bloquées.
+- Résilience aux erreurs:
+  - Journalise unhandledRejection et uncaughtException pour ne pas laisser des erreurs critiques passer inaperçues.
+Express et En-têtes
+
+- Masque d’empreinte technologique:
+  - app.disable('x-powered-by') pour ne pas exposer qu’Express est utilisé.
+- Helmet renforcé:
+  - Ajout de helmet.hsts() pour forcer HTTPS (utile derrière un proxy/terminateur TLS).
+  - helmet.referrerPolicy({ policy: 'no-referrer' }) pour limiter les informations de provenance.
+  - helmet.crossOriginResourcePolicy({ policy: 'same-origin' }) pour restreindre les ressources accessibles cross-origin.
+  - CSP conservée et restrictive.
+- Protection contre payloads volumineux:
+  - Limite express.json({ limit: '100kb' }) pour réduire les risques d’abus par gros corps de requêtes.
+Validation et Intégrité des Entrées
+
+- Validation unifiée avec Joi:
+  - DELETE /resources/:id utilise désormais validate(schemas.resourceId) au lieu d’une validation manuelle, garantissant la cohérence des contrôles d’entrée sur les routes.
+Rate Limiting (Tunable, Anti-Bruteforce)
+
+- Paramétrage externalisé pour /auth/login :
+  - Ajout dans src/config/security.js et env.example de LOGIN_RATE_LIMIT_WINDOW_MS et LOGIN_RATE_LIMIT_MAX .
+  - src/middleware/rateLimiter.js lit ces valeurs au lieu de constantes inline.
+- Bénéfices:
+  - Meilleure maintenabilité et sécurité opérationnelle (ajustement des seuils sans changer le code).
+  - skipSuccessfulRequests:true conservé pour ne pas pénaliser les connexions réussies.
+CORS et Politique d’Origine
+
+- En production , interdiction de CORS_ORIGIN='*' via contrôle au démarrage.
+- CORS reste configurable via CORS_ORIGIN , et autorise les requêtes sans origine (Postman/cURL) côté code.
+Santé et Observabilité
+
+- Healthcheck Docker corrigé:
+  - docker-compose.yml pointe vers http://localhost:3000/health (publique), évitant un check qui échoue par manque d’authentification.
+- Effets:
+  - Liveness plus fiable, déploiements plus stables, moins de faux négatifs.
+Maintenabilité et Réduction de Duplications
+
+- Externalisation des limites /auth/login dans la config et .env , au lieu de valeurs codées en dur.
+- Validation centralisée avec Joi sur DELETE /resources/:id .
+- Suppression de package-secure.json (manifest redondant non utilisé), pour éviter confusion et divergence.
+Récapitulatif des Variables .env ajoutées ou vérifiées
+
+- JWT_SECRET (obligatoire et fort en production).
+- LOGIN_RATE_LIMIT_WINDOW_MS (exemple: 900000 ).
+- LOGIN_RATE_LIMIT_MAX (exemple: 50 ).
+- CORS_ORIGIN (doit être une origine spécifique en production).
+Impact Sécurité
+
+- Confidentialité: moins d’exposition des infos serveur (en-têtes), CSP renforcée.
+- Intégrité: entrées strictement validées, tokens JWT protégés par démarrage bloquant si secret invalide.
+- Disponibilité: timeouts corrects, arrêt propre, healthcheck fiable, rate limit tunable.
+- OpSec: paramétrage centralisé, erreurs critiques visibles, comportement prévisible en prod.
+Si tu veux, je peux aussi:
+
+- Mettre à jour README-SECURE.md pour documenter les nouvelles variables et politiques Helmet.
+- Ajouter des logs structurés (type morgan ) avec masquage des données sensibles.
+- Proposer une migration vers une base persistante (SQLite/PostgreSQL) avec schémas et migrations sécurisées.
