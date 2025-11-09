@@ -1,6 +1,6 @@
 # API REST DevSecOps
 
-Ce projet contient deux versions de l'API :
+Ce projet contient deux versions de l'API :1
 
 1. **Version non sécurisée** (POC Pédagogique) - `server.js`
 2. **Version sécurisée** - `server-secure.js` ✨
