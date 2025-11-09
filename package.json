@@ -5,10 +5,10 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "start:secure": "node server-secure.js",
+    "start:secure": "node server-secure.mjs",
     "reset-db": "node reset-db.js",
     "dev": "nodemon server.js",
-    "dev:secure": "nodemon server-secure.js"
+    "dev:secure": "nodemon server-secure.mjs"
   },
   "keywords": [],
   "author": "",

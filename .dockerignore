@@ -9,4 +9,9 @@ README.md
 .env
 *.log
 .DS_Store
+README-SECURE.md
+docker-compose.yml
+API_DEVSECOPS.postman_collection.json
+test-api-secure.sh
+sonar-project.properties
 
