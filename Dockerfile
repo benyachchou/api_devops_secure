@@ -46,5 +46,8 @@ USER node
 # Exposer le port 3000
 EXPOSE 3000
 
+# Déclarer le répertoire writable explicitement; recommandation: exécuter le conteneur avec --read-only
+VOLUME ["/app/tmp"]
+
 # Démarrer la version sécurisée
 CMD ["npm", "run", "start:secure"]
