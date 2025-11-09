@@ -51,8 +51,8 @@ async function initTestData() {
   }
 }
 
-// Démarrer le serveur
-async function startServer() {
+// Top-level async IIFE
+(async () => {
   try {
     // Vérifications de configuration critiques
     if (NODE_ENV === 'production') {
@@ -65,7 +65,7 @@ async function startServer() {
     }
 
     await initTestData();
-    
+
     const server = app.listen(PORT, () => {
       console.log(`🚀 Serveur sécurisé démarré sur http://localhost:${PORT}`);
       console.log(`📝 Environnement: ${NODE_ENV}`);
@@ -104,7 +104,5 @@ async function startServer() {
     console.error('Erreur lors du démarrage du serveur:', error);
     process.exit(1);
   }
-}
-
-startServer();
+})();
 

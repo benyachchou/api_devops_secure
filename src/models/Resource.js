@@ -23,7 +23,7 @@ function createResource(resourceData) {
  * @returns {Object|null} Ressource trouvée ou null
  */
 function findById(id) {
-  return resources.find(r => r.id === parseInt(id)) || null;
+  return resources.find(r => r.id === Number.parseInt(id, 10)) || null;
 }
 
 /**
@@ -40,7 +40,7 @@ function getAll() {
  * @returns {Boolean} True si la ressource a été supprimée
  */
 function deleteById(id) {
-  const index = resources.findIndex(r => r.id === parseInt(id));
+  const index = resources.findIndex(r => r.id === Number.parseInt(id, 10));
   if (index !== -1) {
     resources.splice(index, 1);
     return true;

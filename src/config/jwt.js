@@ -23,11 +23,7 @@ function generateToken(payload) {
  * @throws {Error} Si le token est invalide
  */
 function verifyToken(token) {
-  try {
-    return jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] });
-  } catch (error) {
-    throw new Error('Token invalide ou expiré');
-  }
+  return jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] });
 }
 
 module.exports = {

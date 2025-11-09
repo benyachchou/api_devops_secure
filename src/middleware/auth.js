@@ -8,7 +8,7 @@ function requireAuth(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
     
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader?.startsWith('Bearer ')) {
       return res.status(401).json({
         success: false,
         message: 'Token d\'authentification manquant'
@@ -36,10 +36,8 @@ function requireAuth(req, res, next) {
     
     next();
   } catch (error) {
-    return res.status(401).json({
-      success: false,
-      message: 'Token invalide ou expiré'
-    });
+    // Laisser les erreurs JWT natives être gérées par le gestionnaire global
+    return next(error);
   }
 }
 

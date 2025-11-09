@@ -53,7 +53,7 @@ router.delete('/:id',
   (req, res, next) => {
     try {
       const { id } = req.params;
-      const resourceId = parseInt(id);
+      const resourceId = Number.parseInt(id, 10);
       const resource = Resource.findById(resourceId);
       
       if (!resource) {
