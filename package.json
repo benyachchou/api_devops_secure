@@ -1,0 +1,17 @@
+{
+  "name": "api-devsecops-insecure",
+  "version": "1.0.0",
+  "description": "API REST volontairement non sécurisée pour POC pédagogique",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "reset-db": "node reset-db.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "better-sqlite3": "^11.0.0"
+  }
+}
