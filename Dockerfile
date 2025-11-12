@@ -31,7 +31,7 @@ WORKDIR /app
 COPY --from=builder /app /app
 
 # **Copie le vrai fichier .env, si tu veux l'inclure dans l'image**
-COPY --chown=node:node .env .env
+#COPY --chown=node:node .env .env
 
 # Fixer l'ownership et les permissions (lecture seule partout sauf /app/tmp)
 RUN mkdir -p /app/tmp \
