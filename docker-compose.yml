@@ -5,9 +5,8 @@ services:
     ports:
       - "3000:3000"
     # ...tes volumes
-    environment:
-      - NODE_ENV=production
-      - JWT_SECRET=Hjr7hBqrvsd91-abCD45!Hdtw@nwbyaKkTq2prjzvVX6P
+    env_file:
+      - .env
     networks:
       - sonarnet
 
