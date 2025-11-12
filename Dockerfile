@@ -6,20 +6,18 @@ RUN apk add --no-cache g++ make python3
 
 WORKDIR /app
 
-# Éviter l'exécution de scripts npm en root; travailler en utilisateur non-root
+# Préparer/assurer les permissions non-root pour l'utilisateur node
 RUN chown -R node:node /app
 USER node
 
-# Installer les dépendances en mode production (via lockfile)
-# Note: --ignore-scripts est volontairement omis car des modules natifs (ex: bcrypt)
-# nécessitent une compilation. L'exécution des scripts est isolée dans le stage builder.
+# Copier les manifestes de dépendances au préalable (caching Docker)
 COPY package*.json ./
-# Sécurise l'installation: ignore les scripts globaux, puis ne reconstruit que les modules nécessaires
+
+# Installer uniquement les dépendances de production, puis recompiler bcrypt si nécessaire
 RUN npm ci --omit=dev --no-audit --no-fund --ignore-scripts \
     && npm rebuild bcrypt --build-from-source
 
-# Copier uniquement les artefacts nécessaires à l'exécution
-# Évite la copie récursive de fichiers potentiellement sensibles dans l'image
+# Copier le code source de l'application (cible précise)
 COPY src ./src
 COPY server-secure.mjs ./server-secure.mjs
 
@@ -29,11 +27,13 @@ FROM node:20-alpine AS runtime
 ENV NODE_ENV=production
 WORKDIR /app
 
-# Copier l'application depuis le builder sans changer l'ownership (root:root)
-# Évite qu'un utilisateur non-root puisse modifier les permissions (immutabilité)
+# Copier l’application compilée depuis le builder :
 COPY --from=builder /app /app
 
-# Rendre les ressources copiées en lecture seule, sauf un répertoire temporaire
+# Si tu veux inclure un .env dans l'image (exemple pour dev/staging)
+COPY --chown=node:node env.exemple .env
+
+# Fixer l'ownership et les permissions (lecture seule partout sauf /app/tmp)
 RUN mkdir -p /app/tmp \
     && chown node:node /app/tmp \
     && chmod 700 /app/tmp \
@@ -43,11 +43,11 @@ RUN mkdir -p /app/tmp \
 # Utiliser l'utilisateur non-root fourni par l'image officielle
 USER node
 
-# Exposer le port 3000
+# Exposer le port usuel de l’API
 EXPOSE 3000
 
-# Déclarer le répertoire writable explicitement; recommandation: exécuter le conteneur avec --read-only
+# Déclarer le répertoire writable explicitement
 VOLUME ["/app/tmp"]
 
-# Démarrer la version sécurisée
+# Commande de démarrage : npm script "start:secure"
 CMD ["npm", "run", "start:secure"]
