@@ -49,7 +49,7 @@ router.post('/',
 router.delete('/:id',
   requireAuth,
   requireAdmin,
-  validate(schemas.resourceId),
+  validate(schemas.resourceId, 'params'),
   (req, res, next) => {
     try {
       const { id } = req.params;
