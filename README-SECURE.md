@@ -1,4 +1,4 @@
-# API REST Sécurisée
+# API REST Sécurisée salut
 
 Version sécurisée de l'API avec toutes les bonnes pratiques de sécurité implémentées.
 
@@ -104,7 +104,7 @@ curl -X POST http://localhost:3000/auth/register \
     "motDePasse": "password123"
   }'
 ```
-
+#Mster TRC
 **Réponse :**
 ```json
 {
