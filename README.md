@@ -237,10 +237,10 @@ curl -X POST http://localhost:3000/resources \
   -d '{"name":"Ressource 1"}'
 # Réponse: {"message":"Accès refusé. Rôle admin requis."}
 ```
-
+hello
 ### Test avec un administrateur (admin)
 
-```bash
+```bashhek
 # 1. Se connecter avec Admin
 curl -X POST http://localhost:3000/login \
   -H "Content-Type: application/json" \
@@ -373,7 +373,7 @@ Content-Type: application/json
 ```
 x-email: alice@example.com
 x-password: password123
-```
+```zdezdz
 
 **Réponse attendue (200) :**
 ```json
