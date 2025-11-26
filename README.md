@@ -374,7 +374,7 @@ Content-Type: application/json
 x-email: alice@example.com
 x-password: password123
 ```zdezdz
-
+defef
 **Réponse attendue (200) :**
 ```json
 {
