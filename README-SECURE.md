@@ -119,7 +119,7 @@ curl -X POST http://localhost:3000/auth/register \
 }
 ```
 
-#### POST /auth/login
+#### POST /auth/login_test
 Authentifier un utilisateur et obtenir un token JWT
 
 **Requête :**
