@@ -15,7 +15,7 @@ Version sécurisée de l'API avec toutes les bonnes pratiques de sécurité impl
 - ✅ **Stockage modulaire** en mémoire (facilement remplaçable par une DB)
 
 ## 📁 Structure du projet
-
+#hello
 ```
 src/
   config/
@@ -104,7 +104,7 @@ curl -X POST http://localhost:3000/auth/register \
     "motDePasse": "password123"
   }'
 ```
-#Mster TRC
+#Mster TRC2026
 **Réponse :**
 ```json
 {
